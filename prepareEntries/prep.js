@@ -25,12 +25,12 @@ const stressChar = String.fromCodePoint(712);
 function extractIPAc(content){
 	var match = /IPA(?:\([^\)]+\)?:\s*\/([^\/]+)\/)/.exec(content);
 	if (match) {
-		var rawPattern = match[1].split(/\|/g);
-		var pattern = rawPattern.filter(x => [String.fromCodePoint(712), , "'", ''].indexOf(x) == -1)
-		if (pattern.length < 2){
+		var rawPattern = match[1].split("");
+		var pattern = rawPattern.filter(x => [String.fromCodePoint(712), , "'", '', '.'].indexOf(x) == -1)
+		if (pattern.length < 4){
 			return {};
 		}
-		return {start: pattern[0], end: pattern[pattern.length-1], pattern: pattern}
+		return {start: pattern.slice(0,2).join(''), end: pattern.slice(pattern.length -2).join(''), pattern: pattern}
 	}
 	else {
 		return {};
