@@ -13,10 +13,14 @@ function prepareEntry(title, cb){
 				var data = pages[id].extract
 				result = extractIPAc(data);
 				result["clue"] = chooseClue(data)
+				result["success"] = true;
 				result["title"] = title;
+
 				cb(result)
 		}
-		catch(err){}
+		catch(err){
+			cb({title: title, success: false})
+		}
 	});
 }
 
@@ -30,7 +34,7 @@ function extractIPAc(content){
 		if (pattern.length < 4){
 			return {};
 		}
-		return {start: pattern.slice(0,2).join(''), end: pattern.slice(pattern.length -2).join(''), pattern: pattern}
+		return {start: pattern.slice(0,3).join(''), end: pattern.slice(pattern.length -3).join(''), pattern: pattern}
 	}
 	else {
 		return {};

@@ -2,14 +2,24 @@ const axios = require('axios')
 const prepareEntry = require('./prep');
 
 var apiURI = process.argv[2]
+var interval = 20;
 
 function prepareNextEntry(){
     axios.get(apiURI + "/api/q")
         .then(function(res){
+            if (!/[a-z]/i.test(res?.data?._id)){
+                // Queue is empty?
+                interval *= 2;
+                interval = Math.min(interval, 5*60*1000);
+                return;
+            }
+            else {
+                interval = 20;
+            }
             //console.log(res)
             prepareEntry(res.data._id, insertEntry)
         });
-    
+    setTimeout(prepareNextEntry, interval);
 }
 
 function insertEntry(entry){
@@ -19,4 +29,4 @@ function insertEntry(entry){
     }
 }
 
-setInterval(prepareNextEntry, 25);
+prepareNextEntry()
