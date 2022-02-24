@@ -18,6 +18,9 @@ function prepareNextEntry(){
             }
             //console.log(res)
             prepareEntry(res.data._id, insertEntry)
+        })
+        .catch(er => {
+            interval *= 2;
         });
     setTimeout(prepareNextEntry, interval);
 }
@@ -25,7 +28,7 @@ function prepareNextEntry(){
 function insertEntry(entry){
     console.log(entry)
     if (entry.start && entry.end && entry.clue){
-        axios.post(apiURI + "/api/entry/" + encodeURIComponent(entry.title), entry);
+        axios.post(apiURI + "/api/entry/" + encodeURIComponent(entry.title), entry).catch();
     }
 }
 
