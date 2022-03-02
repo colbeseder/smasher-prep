@@ -19,19 +19,20 @@ function insertAllRaw(){
     });
     
     lineReader.on('line', function (line) {
-        var word = line.trim().toLocaleLowerCase();
-        if (/^[a-z'\-]+$/i.test(word)){
-            queue.push(word);
-         }
+        var word = line.trim();
+        queue.push(word);
      });
 }
 
+var totalInserts = 0;
 var handle;
 function dequeue(){
     if (queue.length === 0){
         clearInterval(handle);
+        console.log(`Inserted ${totalInserts} entries`)
         return;
     }
+    totalInserts++;
     prepareEntry(queue.pop(), insertEntry);
 }
 
