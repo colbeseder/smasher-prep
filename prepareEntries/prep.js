@@ -53,8 +53,19 @@ function cleanUpLinks(clue){
 }
 
 function getClues(content){
-	var re = /=+ (?:Noun|Adjective|Verb) =+\n.*?(?:\n\n)([^=]+)/ ;
-	var match = re.exec(content);
+	var REs = [
+		/=+ (?:Noun) =+\n.*?(?:\n\n)([^=]+)/,
+		/=+ (?:Verb) =+\n.*?(?:\n\n)([^=]+)/,
+		/=+ (?:Adjective) =+\n.*?(?:\n\n)([^=]+)/
+	];
+	var re, match;
+	for (var i = 0; i < REs.length ; i++){
+		re = REs[i];
+		match = re.exec(content);
+		if (match){
+			break;
+		}
+	}
 	if (!match){
 		return [];
 	}
@@ -76,8 +87,8 @@ function rateClue(clue, title){
 	if (/\(/.test(clue)){ // Contains brackets
 		score -= 10;
 	}
-	if (/historical|rare|archaic|obsolete/i.test(clue)){
-		score -= 30;
+	if (/historical|rare|archaic|obsolete|slur|ethnic/i.test(clue)){
+		score -= 40;
 	}
 	clue = removeBrackets(clue);
 	if (clue.length < 3 || clue.length > 150){
@@ -88,6 +99,12 @@ function rateClue(clue, title){
 	}
 	if (clue.length > 100){
 		score -= 7
+	}
+	if (/Synonym/i.test(clue)){
+		score += 10;
+	}
+	else if(/:/.test(clue)){
+		score -= 10;
 	}
 	if (
 		title.length >= 4 && 
