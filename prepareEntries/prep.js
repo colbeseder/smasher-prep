@@ -56,7 +56,8 @@ function getClues(content){
 	var REs = [
 		/=+ (?:Noun) =+\n.*?(?:\n\n)([^=]+)/,
 		/=+ (?:Verb) =+\n.*?(?:\n\n)([^=]+)/,
-		/=+ (?:Adjective) =+\n.*?(?:\n\n)([^=]+)/
+		/=+ (?:Adjective) =+\n.*?(?:\n\n)([^=]+)/,
+		/=+ (?:Adverb) =+\n.*?(?:\n\n)([^=]+)/
 	];
 	var re, match;
 	var clues = [];
@@ -136,7 +137,7 @@ function chooseBestClue(content, title){
 		return '';
 	}
 	//console.log(sortedCluesObj);
-	console.log(`${title}: ${bestClueObj.clue}`);
+	//console.log(`${title}: ${bestClueObj.clue}`);
 	return bestClueObj.clue ;
 }
 
