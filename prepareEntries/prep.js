@@ -11,10 +11,10 @@ function prepareEntry(title, cb){
 				var pages = res.data.query.pages;
 				var id = Object.keys(pages)[0]
 				var data = pages[id].extract
-				data = data.replace(/^[\s\S]==\s*English\s*==/im, '');
-				data = data.replace(/([^=])==[^=][\s\S]*/m, '$1')
 				result = extractIPAc(data);
-				result["clue"] = chooseBestClue(data, title)
+				var EnglishData = data.replace(/^[\s\S]==\s*English\s*==/im, '');
+				EnglishData = EnglishData.replace(/([^=])==[^=][\s\S]*/m, '$1')
+				result["clue"] = chooseBestClue(EnglishData, title)
 				result["success"] = true;
 				result["title"] = title;
 
