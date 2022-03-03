@@ -52,18 +52,8 @@ function cleanUpLinks(clue){
 	})
 }
 
-function chooseClue(content){
-	var match = /=+ (?:Noun|Adjective) =+\n.*?(?:\n\n)(.+?)[.;]/.exec(content);
-	if (match) {
-		return cleanUpLinks(match[1]);
-	}
-	else {
-		return '';
-	}
-}
-
 function getClues(content){
-	var re = /=+ (?:Noun|Adjective) =+\n.*?(?:\n\n)([^=]+)/ ;
+	var re = /=+ (?:Noun|Adjective|Verb) =+\n.*?(?:\n\n)([^=]+)/ ;
 	var match = re.exec(content);
 	if (!match){
 		return [];
@@ -73,7 +63,7 @@ function getClues(content){
 	if (!splitter.test(clueBlock)){
 		splitter = /\n/g ;
 	}
-	var clues = clueBlock.split(splitter).map(x=>x.replace(/[.;\n][\s\S]*/m, '').trim());
+	var clues = clueBlock.split(splitter).map(x=>cleanUpLinks(x.replace(/[.;\n][\s\S]*/m, '')).trim());
 	return clues;
 }
 
@@ -85,6 +75,9 @@ function rateClue(clue, title){
 	var score = 50;
 	if (/\(/.test(clue)){ // Contains brackets
 		score -= 10;
+	}
+	if (/historical|rare|archaic|obsolete/i.test(clue)){
+		score -= 30;
 	}
 	clue = removeBrackets(clue);
 	if (clue.length < 3 || clue.length > 150){
@@ -121,7 +114,8 @@ function chooseBestClue(content, title){
 	if (bestClueObj.score < 1){
 		return '';
 	}
-	//console.log(`${title}: ${bestClueObj.clue}`)
+	//console.log(sortedCluesObj);
+	//console.log(`${title}: ${bestClueObj.clue}`);
 	return bestClueObj.clue ;
 }
 
