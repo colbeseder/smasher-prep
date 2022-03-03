@@ -22,6 +22,11 @@ for (var i = 0 ; i < existing.length; i++){
             continue;
         }
     }
+    if (/ing$/.test(word)){
+        if (existing.indexOf(word.slice(0,word.replace(/ing$/, ''))) > -1){
+            continue;
+        }
+    }
     console.log(word)
 }
 
