@@ -24,15 +24,12 @@ function insertAllRaw(){
      });
 }
 
-var totalInserts = 0;
 var handle;
 function dequeue(){
     if (queue.length === 0){
         clearInterval(handle);
-        console.log(`Inserted ${totalInserts} entries`)
         return;
     }
-    totalInserts++;
     prepareEntry(queue.pop(), insertEntry);
 }
 

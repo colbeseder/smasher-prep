@@ -11,8 +11,10 @@ function prepareEntry(title, cb){
 				var pages = res.data.query.pages;
 				var id = Object.keys(pages)[0]
 				var data = pages[id].extract
+				data = data.replace(/^[\s\S]==\s*English\s*==/im, '');
+				data = data.replace(/([^=])==[^=][\s\S]*/m, '$1')
 				result = extractIPAc(data);
-				result["clue"] = chooseClue(data)
+				result["clue"] = chooseBestClue(data, title)
 				result["success"] = true;
 				result["title"] = title;
 
@@ -58,6 +60,69 @@ function chooseClue(content){
 	else {
 		return '';
 	}
+}
+
+function getClues(content){
+	var re = /=+ (?:Noun|Adjective) =+\n.*?(?:\n\n)([^=]+)/ ;
+	var match = re.exec(content);
+	if (!match){
+		return [];
+	}
+	var clueBlock = match[1].trim();
+	var splitter = /\n{2,}/g ;
+	if (!splitter.test(clueBlock)){
+		splitter = /\n/g ;
+	}
+	var clues = clueBlock.split(splitter).map(x=>x.replace(/[.;\n][\s\S]*/m, '').trim());
+	return clues;
+}
+
+function removeBrackets(s){
+    return s.replace(/\([^)]*\)?\s*/g, '');
+}
+
+function rateClue(clue, title){
+	var score = 50;
+	if (/\(/.test(clue)){ // Contains brackets
+		score -= 10;
+	}
+	clue = removeBrackets(clue);
+	if (clue.length < 3 || clue.length > 150){
+		score = 0;
+	}
+	if (/^\(? *\d/.test(clue)){ // Starts with a number
+		score = 0;
+	}
+	if (clue.length > 100){
+		score -= 7
+	}
+	if (
+		title.length >= 4 && 
+		(clue.indexOf(title.slice(0, 4)) > -1) ){ // Clue contains start of word
+			score -= 20;
+		}
+	else if (
+		title.length >= 3 && 
+		(clue.indexOf(title.slice(0, 3)) > -1) ){ // Clue contains start of word
+			score -= 15;
+		}
+	return score;
+}
+
+function chooseBestClue(content, title){
+	var clues = getClues(content);
+	if (clues.length === 0){
+		return '';
+	}
+
+	var ratedClues = clues.map(clue => ({clue:clue, score: rateClue(clue, title)}) )
+	var sortedCluesObj = ratedClues.sort((a, b) => {return b.score - a.score});
+	var bestClueObj = sortedCluesObj[0];
+	if (bestClueObj.score < 1){
+		return '';
+	}
+	//console.log(`${title}: ${bestClueObj.clue}`)
+	return bestClueObj.clue ;
 }
 
 module.exports = prepareEntry
