@@ -61,15 +61,16 @@ function getClues(content){
 	];
 	var re, match;
 	var clues = [];
+	var splitter = /\n{2,}/g ;
+	if (!splitter.test(content)){
+		splitter = /\n/g ;
+	}
 	for (var i = 0; i < REs.length ; i++){
 		re = REs[i];
 		match = re.exec(content);
 		if (match){
 			var clueBlock = match[1].trim();
-			var splitter = /\n{2,}/g ;
-			if (!splitter.test(clueBlock)){
-				splitter = /\n/g ;
-			}
+
 			var moreClues = clueBlock.split(splitter).map(x=>cleanUpLinks(x.replace(/[.;\n][\s\S]*/m, '')).trim());
 			clues = clues.concat(moreClues);
 		}
@@ -83,16 +84,16 @@ function removeBrackets(s){
 
 function rateClue(clue, title){
 	var score = 50;
-	if (/\(/.test(clue)){ // Contains brackets
+	if (/\(|\)/.test(clue)){ // Contains brackets
 		score -= 10;
 	}
-	if (/\[/.test(clue)){ // Contains brackets
+	if (/\[|\]|\{|\}/.test(clue)){ // Contains brackets
 		score -= 30;
 	}
-	if (/historical|rare|archaic|obsolete|slur|ethnic/i.test(clue)){
+	if (/historical|rare|archaic|obsolete|slur|ethnic|dated/i.test(clue)){
 		score -= 40;
 	}
-	if (/participle|tense/i.test(clue)){
+	if (/participle|tense|thesaurus/i.test(clue)){
 		score -= 25;
 	}
 	clue = removeBrackets(clue);

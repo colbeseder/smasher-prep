@@ -35,4 +35,4 @@ function dequeue(){
 
 insertAllRaw();
 console.log(queue.slice(0,5).join());
-handle = setInterval(dequeue, 20);
+handle = setInterval(dequeue, 10);
