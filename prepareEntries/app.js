@@ -6,17 +6,22 @@ const api_key = process.env.ENTRY_API_KEY ;
 
 var apiURI = process.argv[2]
 
+var dry_run = process.env.DRY; // Run with --env DRY=1
+
 function insertEntry(entry){
     if (entry.start && entry.end && entry.clue){
-        //console.log(`Writing: ${entry.title}`)
-        axios.post(
-            apiURI + "/api/entry/" + encodeURIComponent(entry.title),
-            entry,
-            { headers: {
-                'X-API-Key': api_key
-              }
-            }
-            ).catch();
+        if(dry_run){
+            console.log(`Writing: ${entry.title} : ${entry.clue}`)
+        }
+        else {
+            axios.post(
+                apiURI + "/api/entry/" + encodeURIComponent(entry.title),
+                entry,
+                { headers: {
+                    'X-API-Key': api_key
+                }
+                }).catch();
+        }
     }
 }
 

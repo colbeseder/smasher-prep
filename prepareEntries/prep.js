@@ -54,9 +54,9 @@ function cleanUpLinks(clue){
 
 function getClues(content){
 	var REs = [
+		/=+ (?:Adjective) =+\n.*?(?:\n\n)([^=]+)/,
 		/=+ (?:Noun) =+\n.*?(?:\n\n)([^=]+)/,
 		/=+ (?:Verb) =+\n.*?(?:\n\n)([^=]+)/,
-		/=+ (?:Adjective) =+\n.*?(?:\n\n)([^=]+)/,
 		/=+ (?:Adverb) =+\n.*?(?:\n\n)([^=]+)/
 	];
 	var re, match;
@@ -72,6 +72,7 @@ function getClues(content){
 			var clueBlock = match[1].trim();
 
 			var moreClues = clueBlock.split(splitter).map(x=>cleanUpLinks(x.replace(/[.;\n][\s\S]*/m, '')).trim());
+			moreClues[0] = "*" + moreClues[0]; // Star indicates first clue of type
 			clues = clues.concat(moreClues);
 		}
 	}
@@ -84,6 +85,11 @@ function removeBrackets(s){
 
 function rateClue(clue, title){
 	var score = 50;
+	if (/^\*/.test(clue)){
+		// First definition (for word type)
+		score += 21;
+		clue = clue.replace(/^\*/, "");
+	}
 	if (/\(|\)/.test(clue)){ // Contains brackets
 		score -= 10;
 	}
@@ -100,6 +106,7 @@ function rateClue(clue, title){
 	if (clue.length < 3 || clue.length > 150){
 		score = 0;
 	}
+
 	if (/^\(? *\d/.test(clue)){ // Starts with a number
 		score = 0;
 	}
@@ -131,8 +138,17 @@ function chooseBestClue(content, title){
 		return '';
 	}
 
-	var ratedClues = clues.map(clue => ({clue:clue, score: rateClue(clue, title)}) )
+	var ratedClues = clues.map(clue => ({clue:clue.replace(/^\*/, ""), score: rateClue(clue, title)}) )
 	var sortedCluesObj = ratedClues.sort((a, b) => {return b.score - a.score});
+	/*
+	if (false){
+		console.log(`__${title}__`);
+		for (var i = 0 ; i < ratedClues.length; i++){
+			console.log(`${ratedClues[i].score} : ${ratedClues[i].clue}`);
+		}
+		console.log("----------");
+	}
+	*/
 	var bestClueObj = sortedCluesObj[0];
 	if (bestClueObj.score < 1){
 		return '';
