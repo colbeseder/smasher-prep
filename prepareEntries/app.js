@@ -14,13 +14,14 @@ function insertEntry(entry){
             console.log(`Writing: ${entry.title} : ${entry.clue}`)
         }
         else {
+            var title = entry.title;
             axios.post(
                 apiURI + "/api/entry/" + encodeURIComponent(entry.title),
                 entry,
                 { headers: {
                     'X-API-Key': api_key
                 }
-                }).catch();
+                }).catch(er => console.log(`Error on: ${title}`));
         }
     }
 }
