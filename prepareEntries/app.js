@@ -2,12 +2,21 @@ const axios = require('axios');
 const { clear } = require('console');
 const prepareEntry = require('./prep');
 
+const api_key = process.env.ENTRY_API_KEY ;
+
 var apiURI = process.argv[2]
 
 function insertEntry(entry){
     if (entry.start && entry.end && entry.clue){
         //console.log(`Writing: ${entry.title}`)
-        axios.post(apiURI + "/api/entry/" + encodeURIComponent(entry.title), entry).catch();
+        axios.post(
+            apiURI + "/api/entry/" + encodeURIComponent(entry.title),
+            entry,
+            { headers: {
+                'X-API-Key': api_key
+              }
+            }
+            ).catch();
     }
 }
 
