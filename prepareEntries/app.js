@@ -21,7 +21,9 @@ function insertEntry(entry){
                 { headers: {
                     'X-API-Key': api_key
                 }
-                }).catch(er => console.log(`Error on: ${title}`));
+                }).catch(function(er){
+                    console.log(`Error on: ${title}`);
+                });
         }
     }
 }
@@ -50,4 +52,4 @@ function dequeue(){
 
 insertAllRaw();
 console.log(queue.slice(0,5).join());
-handle = setInterval(dequeue, 25);
+handle = setInterval(dequeue, 100);
