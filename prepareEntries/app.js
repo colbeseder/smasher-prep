@@ -41,6 +41,17 @@ function insertAllRaw(){
      });
 }
 
+var startSendingInterval = 1 // seconds;
+function startSendingIfReady(){
+        axios.get(apiURI + "/api/status")
+        .then(startSending)
+        .catch(function(){
+            setTimeout(startSendingIfReady, startSendingInterval * 1000);
+            console.log(`Retry backend in ${startSendingInterval} seconds`)
+            startSendingInterval *= 2 ;
+        });
+}
+
 var handle;
 function dequeue(){
     if (queue.length === 0){
@@ -52,4 +63,10 @@ function dequeue(){
 
 insertAllRaw();
 console.log(queue.slice(0,5).join());
-handle = setInterval(dequeue, 100);
+
+function startSending(){
+    console.log("Starting send");
+    handle = setInterval(dequeue, 100);
+}
+
+startSendingIfReady();
