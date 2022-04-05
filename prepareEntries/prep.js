@@ -4,7 +4,7 @@ const axios = require('axios')
 //var contentQuery = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=revisions&utf8=1&rvprop=content&rvslots=main&rvsection=0&explaintext&exintro&titles=";
 const contentQuery = "https://en.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext&utf8=1&titles="
 
-function prepareEntry(title, cb){
+function prepareEntry(title, resolve, reject){
 	axios.get(contentQuery + encodeURIComponent(title))
 		.then(function(res){
 			try {
@@ -18,10 +18,12 @@ function prepareEntry(title, cb){
 				result["success"] = true;
 				result["title"] = title;
 
-				cb(result)
+				resolve(result);
 		}
 		catch(err){
-			cb({title: title, success: false})
+			if (reject){
+				reject(title);
+			}
 		}
 	});
 }

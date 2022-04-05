@@ -22,6 +22,7 @@ function insertEntry(entry){
                     'X-API-Key': api_key
                 }
                 }).catch(function(er){
+                    requeue(entry);
                     console.log(`Error on: ${title}`);
                 });
         }
@@ -56,9 +57,24 @@ var handle;
 function dequeue(){
     if (queue.length === 0){
         clearInterval(handle);
+        handle = null;
         return;
     }
-    prepareEntry(queue.pop(), insertEntry);
+    var item = queue.pop();
+    if (typeof item === "string"){
+        prepareEntry(item, insertEntry, requeue);
+    }
+    else { // item is a prepared entry object
+        insertEntry(item);
+    }
+}
+
+function requeue(x){
+    console.log(`Requeue ${x.title || x}`)
+    queue.push(x);
+    if (!handle){
+        startSending();
+    }
 }
 
 insertAllRaw();
