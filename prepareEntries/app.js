@@ -62,7 +62,7 @@ function dequeue(){
     }
     var item = queue.pop();
     if (typeof item === "string"){
-        prepareEntry(item, insertEntry, requeue);
+        prepareEntry(item, insertEntry);
     }
     else { // item is a prepared entry object
         insertEntry(item);
