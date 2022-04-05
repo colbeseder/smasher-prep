@@ -11,14 +11,17 @@ function prepareEntry(title, resolve, reject){
 				var pages = res.data.query.pages;
 				var id = Object.keys(pages)[0]
 				var data = pages[id].extract
-				result = extractIPAc(data);
+				var result = extractIPAc(data);
 				var EnglishData = data.replace(/^[\s\S]==\s*English\s*==/im, '');
 				EnglishData = EnglishData.replace(/([^=])==[^=][\s\S]*/m, '$1')
 				result["clue"] = chooseBestClue(EnglishData, title)
 				result["success"] = true;
 				result["title"] = title;
-
-				resolve(result);
+				axios.post("http://127.0.0.1:5000/pick", { text: result["clue"] })
+					.then(res => {
+						result["target"] = res.data.result;
+						resolve(result);
+					})
 		}
 		catch(err){
 			if (reject){
