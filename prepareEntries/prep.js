@@ -3,6 +3,7 @@ const axios = require('axios')
 
 //var contentQuery = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=revisions&utf8=1&rvprop=content&rvslots=main&rvsection=0&explaintext&exintro&titles=";
 const contentQuery = "https://en.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext&utf8=1&titles="
+const combinerURL = "http://127.0.0.1:5000"
 
 function prepareEntry(title, resolve, reject){
 	axios.get(contentQuery + encodeURIComponent(title))
@@ -17,7 +18,7 @@ function prepareEntry(title, resolve, reject){
 				result["clue"] = chooseBestClue(EnglishData, title)
 				result["success"] = true;
 				result["title"] = title;
-				axios.post("http://127.0.0.1:5000/pick", { text: result["clue"] })
+				axios.post(combinerURL + "/pick", { text: result["clue"] })
 					.then(res => {
 						result["target"] = res.data.result;
 						resolve(result);

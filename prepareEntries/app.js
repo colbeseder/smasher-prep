@@ -42,14 +42,14 @@ function insertAllRaw(){
      });
 }
 
-var startSendingInterval = 1 // seconds;
-function startSendingIfReady(){
+
+function onServerReady(statusURL, cb, interval){
+        interval = interval || 1 //second
         axios.get(apiURI + "/api/status")
-        .then(startSending)
+        .then(cb)
         .catch(function(){
-            setTimeout(startSendingIfReady, startSendingInterval * 1000);
-            console.log(`Retry backend in ${startSendingInterval} seconds`)
-            startSendingInterval *= 2 ;
+            setTimeout(function(){startSendingIfReady(statusURL, cb, interval*2)}, interval * 1000);
+            console.log(`Retry ${statusURL} in ${startSendingInterval} seconds`)
         });
 }
 
@@ -77,12 +77,14 @@ function requeue(x){
     }
 }
 
-insertAllRaw();
-console.log(queue.slice(0,5).join());
-
 function startSending(){
     console.log("Starting send");
     handle = setInterval(dequeue, 250);
 }
 
-startSendingIfReady();
+function combinerReady(){
+    onServerReady(apiURI + "/api/status", startSending);
+}
+
+insertAllRaw()
+onServerReady("http://127.0.0.1:5000/status", combinerReady);
