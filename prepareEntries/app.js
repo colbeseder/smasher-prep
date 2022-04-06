@@ -23,7 +23,8 @@ function insertEntry(entry){
                 }
                 }).catch(function(er){
                     requeue(entry);
-                    console.log(`Error on: ${title}`);
+                    console.log(`${er.response.status} error on: "${title}"`);
+                    console.log(er.response.data);
                 });
         }
     }
