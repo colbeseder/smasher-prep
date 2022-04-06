@@ -50,7 +50,7 @@ function onServerReady(statusURL, cb, interval){
         .then(cb)
         .catch(function(){
             setTimeout(function(){startSendingIfReady(statusURL, cb, interval*2)}, interval * 1000);
-            console.log(`Retry ${statusURL} in ${startSendingInterval} seconds`)
+            console.log(`Retry ${statusURL} in ${interval} seconds`)
         });
 }
 
