@@ -82,7 +82,7 @@ console.log(queue.slice(0,5).join());
 
 function startSending(){
     console.log("Starting send");
-    handle = setInterval(dequeue, 100);
+    handle = setInterval(dequeue, 250);
 }
 
 startSendingIfReady();
