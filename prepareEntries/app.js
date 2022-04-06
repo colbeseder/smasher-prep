@@ -22,9 +22,9 @@ function insertEntry(entry){
                     'X-API-Key': api_key
                 }
                 }).catch(function(er){
-                    requeue(entry);
                     console.log(`${er.response?.status} error on: "${title}"`);
                     console.log(er.response?.data);
+                    requeue(entry);
                 });
         }
     }
@@ -73,7 +73,7 @@ function dequeue(){
 
 function requeue(x){
     console.log(`Requeue ${x.title || x}`)
-    queue.push(x);
+    queue.unshift(x);
     if (!handle){
         startSending();
     }
