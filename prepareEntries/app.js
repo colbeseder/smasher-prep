@@ -58,6 +58,7 @@ function dequeue(){
     if (queue.length === 0){
         clearInterval(handle);
         handle = null;
+        console.log(`Queue is empty`)
         return;
     }
     var item = queue.pop();
