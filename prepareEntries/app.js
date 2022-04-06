@@ -49,7 +49,7 @@ function onServerReady(statusURL, cb, interval){
         axios.get(apiURI + "/api/status")
         .then(cb)
         .catch(function(){
-            setTimeout(function(){startSendingIfReady(statusURL, cb, interval*2)}, interval * 1000);
+            setTimeout(function(){onServerReady(statusURL, cb, interval*2)}, interval * 1000);
             console.log(`Retry ${statusURL} in ${interval} seconds`)
         });
 }
