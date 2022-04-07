@@ -46,11 +46,11 @@ function insertAllRaw(){
 
 function onServerReady(statusURL, cb, interval){
         interval = interval || 1 //second
-        axios.get(apiURI + "/api/status")
+        axios.get(statusURL)
         .then(cb)
         .catch(function(){
             setTimeout(function(){onServerReady(statusURL, cb, interval*2)}, interval * 1000);
-            console.log(`Retry ${statusURL} in ${interval} seconds`)
+            console.log(`Retry ${statusURL} in ${interval} seconds`);
         });
 }
 
