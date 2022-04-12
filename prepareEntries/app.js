@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { clear } = require('console');
-const prepareEntry = require('./prep');
+const prepareEntry = require('./lookup');
 
 const api_key = process.env.ENTRY_API_KEY ;
 
