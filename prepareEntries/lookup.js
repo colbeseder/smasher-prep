@@ -1,11 +1,8 @@
 const axios = require('axios')
 
-
-//var contentQuery = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=revisions&utf8=1&rvprop=content&rvslots=main&rvsection=0&explaintext&exintro&titles=";
 const contentQuery = "https://en.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext&utf8=1&titles="
-const combinerURL = "http://127.0.0.1:5000"
 
-function prepareEntry(title, resolve, reject){
+function prepareEntry(title, resolve, reject, combine=true, combinerURL){
 	axios.get(contentQuery + encodeURIComponent(title))
 		.then(function(res){
 			try {
@@ -18,11 +15,16 @@ function prepareEntry(title, resolve, reject){
 				result["clue"] = chooseBestClue(EnglishData, title)
 				result["success"] = true;
 				result["title"] = title;
+				if(combine) {
 				axios.post(combinerURL + "/pick", { text: result["clue"] })
 					.then(res => {
 						result["target"] = res.data.result;
 						resolve(result);
 					})
+				}
+				else {
+					resolve(result);
+				}
 		}
 		catch(err){
 			if (reject){
@@ -146,21 +148,11 @@ function chooseBestClue(content, title){
 
 	var ratedClues = clues.map(clue => ({clue:clue.replace(/^\*/, ""), score: rateClue(clue, title)}) )
 	var sortedCluesObj = ratedClues.sort((a, b) => {return b.score - a.score});
-	/*
-	if (false){
-		console.log(`__${title}__`);
-		for (var i = 0 ; i < ratedClues.length; i++){
-			console.log(`${ratedClues[i].score} : ${ratedClues[i].clue}`);
-		}
-		console.log("----------");
-	}
-	*/
 	var bestClueObj = sortedCluesObj[0];
 	if (bestClueObj.score < 1){
 		return '';
 	}
-	//console.log(sortedCluesObj);
-	//console.log(`${title}: ${bestClueObj.clue}`);
+
 	return bestClueObj.clue ;
 }
 

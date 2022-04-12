@@ -5,6 +5,7 @@ const prepareEntry = require('./prep');
 const api_key = process.env.ENTRY_API_KEY ;
 
 var apiURI = process.argv[2]
+const combinerURL = "http://127.0.0.1:5000"
 
 var dry_run = process.env.DRY; // Run with --env DRY=1
 
@@ -64,7 +65,7 @@ function dequeue(){
     }
     var item = queue.pop();
     if (typeof item === "string"){
-        prepareEntry(item, insertEntry);
+        prepareEntry(item, insertEntry, true, combinerUrl);
     }
     else { // item is a prepared entry object
         insertEntry(item);
