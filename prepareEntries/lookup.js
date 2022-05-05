@@ -16,11 +16,11 @@ function prepareEntry(title, resolve, reject, combine=true, combinerURL){
 				result["success"] = true;
 				result["title"] = title;
 				if(combine) {
-				axios.post(combinerURL + "/pick", { text: result["clue"] })
-					.then(res => {
-						result["target"] = res.data.result;
-						resolve(result);
-					})
+					axios.post(combinerURL + "/pick", { text: result["clue"] })
+						.then(res => {
+							result["target"] = res.data.result;
+							resolve(result);
+						})
 				}
 				else {
 					resolve(result);

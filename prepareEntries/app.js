@@ -65,7 +65,7 @@ function dequeue(){
     }
     var item = queue.pop();
     if (typeof item === "string"){
-        prepareEntry(item, insertEntry, true, combinerURL);
+        prepareEntry(item, insertEntry, null, true, combinerURL);
     }
     else { // item is a prepared entry object
         insertEntry(item);

@@ -12,7 +12,6 @@ Chinese
 Christian
 Christmas
 Congress
-corona
 Democrat
 Early
 English
@@ -779,6 +778,7 @@ bar
 barbados
 barbara
 barbarous
+barbecue
 barber
 barbie
 barcelona
@@ -1991,6 +1991,7 @@ corn
 cornell
 corner
 cornwall
+corona
 corp
 corporate
 corporation
@@ -2120,6 +2121,7 @@ cuba
 cube
 cubic
 cuckoo
+cucumber
 cuddly
 cuisine
 cult
@@ -4927,6 +4929,7 @@ logitech
 logo
 london
 lone
+loneliness
 lonely
 long
 long-term
@@ -5130,6 +5133,7 @@ marry
 mars
 marsh
 marshall
+marshmallow
 marsupial
 mart
 marten
