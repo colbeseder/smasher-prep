@@ -3,7 +3,7 @@ const { clear } = require('console');
 const prepareEntry = require('./lookup');
 
 const api_key = process.env.ENTRY_API_KEY ;
-const extraWords = process.env.EXTRA_WORDS
+const extraWords = ('' + process.env.EXTRA_WORDS)
     .split(',')
     .map(x => x.trim())
     .filter(x => x);
