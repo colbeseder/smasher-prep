@@ -3,6 +3,10 @@ const { clear } = require('console');
 const prepareEntry = require('./lookup');
 
 const api_key = process.env.ENTRY_API_KEY ;
+const extraWords = process.env.EXTRA_WORDS
+    .split(',')
+    .map(x => x.trim())
+    .filter(x => x);
 
 var apiURI = process.argv[2]
 const combinerURL = "http://127.0.0.1:5000"
@@ -41,7 +45,9 @@ function insertAllRaw(){
     lineReader.on('line', function (line) {
         var word = line.trim();
         queue.push(word);
-     });
+    });
+
+    queue = queue.concat(extraWords);
 }
 
 
