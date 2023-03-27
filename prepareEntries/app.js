@@ -3,17 +3,15 @@ const { clear } = require('console');
 const prepareEntry = require('./lookup');
 
 const api_key = process.env.ENTRY_API_KEY ;
-const extraWords = ('' + process.env.EXTRA_WORDS)
-    .split(',')
-    .map(x => x.trim())
-    .filter(x => x);
 
 var apiURI = process.argv[2]
-const combinerURL = "http://127.0.0.1:5000"
 
 var dry_run = process.env.DRY; // Run with --env DRY=1
 
 function insertEntry(entry){
+    if (!entry.title.trim()){
+        return
+    }
     if (entry.start && entry.end && entry.clue){
         if(dry_run){
             console.log(`Writing: ${entry.title} : ${entry.clue}`)
@@ -24,7 +22,7 @@ function insertEntry(entry){
                 apiURI + "/api/entry/" + encodeURIComponent(entry.title),
                 entry,
                 { headers: {
-                    'X-API-Key': api_key
+                    'X-API-Key': process.env.SMASHER_API_KEY
                 }
                 }).catch(function(er){
                     console.log(`${er.response?.status} error on: "${title}"`);
@@ -46,8 +44,6 @@ function insertAllRaw(){
         var word = line.trim();
         queue.push(word);
     });
-
-    queue = queue.concat(extraWords);
 }
 
 
@@ -71,7 +67,10 @@ function dequeue(){
     }
     var item = queue.pop();
     if (typeof item === "string"){
-        prepareEntry(item, insertEntry, null, true, combinerURL);
+        try{
+                prepareEntry(item, insertEntry);
+        }
+        catch(er){}
     }
     else { // item is a prepared entry object
         insertEntry(item);
@@ -91,9 +90,5 @@ function startSending(){
     handle = setInterval(dequeue, 250);
 }
 
-function combinerReady(){
-    onServerReady(apiURI + "/api/status", startSending);
-}
-
 insertAllRaw()
-onServerReady("http://127.0.0.1:5000/status", combinerReady);
+onServerReady(apiURI + "/api/status", startSending);
