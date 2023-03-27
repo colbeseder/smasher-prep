@@ -1,0 +1,13 @@
+node_modules
+build
+npm-debug.log
+.env
+.DS_Store
+*/resources/Collins Scrabble Words (2019).txt
+*/resources/enwiki-20220219-all-titles-in-ns-0
+*/constants.sh
+frontend/static/JSX/*
+*.yml.dec
+*.yaml.dec
+*.sops.yaml
+deployments/deployProd.sh
