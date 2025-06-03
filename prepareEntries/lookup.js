@@ -17,7 +17,7 @@ function prepareEntry(title, resolve){
 			}
 			result["title"] = title
 			result["clue"] = obj.clue;
-			result["version"] = 7;
+			result["version"] = 9;
 			resolve(result);
 
 		}

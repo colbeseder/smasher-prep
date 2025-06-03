@@ -7,12 +7,16 @@ const api_key = process.env.ENTRY_API_KEY ;
 var apiURI = process.argv[2]
 
 var dry_run = process.env.DRY; // Run with --env DRY=1
+let totalInserts = 0;
+
+const OVERWRITE_EXISTING = false;
 
 function insertEntry(entry){
     if (!entry.title.trim()){
         return
     }
     if (entry.start && entry.end && entry.clue){
+        totalInserts++ ;
         if(dry_run){
             console.log(`Writing: ${entry.title} : ${entry.clue}`)
         }
@@ -31,6 +35,16 @@ function insertEntry(entry){
                 });
         }
     }
+    else {
+        console.log("Can't insert");
+        console.log([entry.start, entry.end, entry.clue]);
+    }
+}
+
+function prepareEntryIfNotAlreadyExists(entry, insertEntry){
+    axios.get(apiURI + "/api/entry/" + encodeURIComponent(entry.title))
+    .then(x => prepareEntry(item, insertEntry))
+    .catch();
 }
 
 var queue = [];
@@ -60,21 +74,30 @@ function onServerReady(statusURL, cb, interval){
 var handle;
 function dequeue(){
     if (queue.length === 0){
-        clearInterval(handle);
-        handle = null;
-        console.log(`Queue is empty`)
+        setTimeout(finish, 1000);
         return;
     }
     var item = queue.pop();
     if (typeof item === "string"){
         try{
+            if(OVERWRITE_EXISTING){
                 prepareEntry(item, insertEntry);
+            }
+            else {
+                isEntryAlreadyExists(item, insertEntry)
+            }
         }
         catch(er){}
     }
     else { // item is a prepared entry object
         insertEntry(item);
     }
+}
+
+function finish(){
+        clearInterval(handle);
+        handle = null;
+        console.log(`Queue is empty. Total insert (Attempts) ${totalInserts}`)
 }
 
 function requeue(x){
