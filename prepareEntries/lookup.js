@@ -1,7 +1,8 @@
 const GPTClue = require('./chatInterface')
 
 function prepareEntry(title, resolve){
-	GPTClue.getQuestion(title).then(x => {
+	let clueType = GPTClue.chooseClueType();
+	GPTClue.getQuestion(title, clueType).then(x => {
 		let content = x.data.choices[0].message.content;
 		try {
 			let obj = JSON.parse(content);
@@ -17,7 +18,8 @@ function prepareEntry(title, resolve){
 			}
 			result["title"] = title
 			result["clue"] = obj.clue;
-			result["version"] = 9;
+			result["clueType"] = clueType;
+			result["version"] = 10;
 			resolve(result);
 
 		}

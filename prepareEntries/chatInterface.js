@@ -10,9 +10,11 @@ const openai = new OpenAIApi(configuration);
 const clueTypes = {
   "a very short, snappy clue": 30,
   "a short, snappy, funny clue": 15,
-  "a very easy, short clue": 35,
+  "a very easy, short clue": 25,
+  "a clue suitable for children": 10,
   "a very easy, short, off-the-wall clue": 10,
-  "a very short cryptic crossword style clue": 10
+  "a short, pithy clue": 5,
+  "a very short, and slightly cryptic clue": 5
 };
 
 function chooseClueType(){
@@ -34,8 +36,8 @@ function chooseClueType(){
 }
 
 
-function getQuestion(entry) {
-    let clueType = chooseClueType()
+function getQuestion(entry, clueType) {
+    clueType = clueType || chooseClueType();
     const message = [
         { role: "system", content: `Respond in JSON, with no other text. Like this {"ipa":"","clue":""}
         "clue" is a ${clueType}, where the answer is "${entry}". The clue should not include any form of the word "${entry}". "ipa" is the IPA pronunciation for "${entry}".` }

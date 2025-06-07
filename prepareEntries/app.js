@@ -9,7 +9,7 @@ var apiURI = process.argv[2]
 var dry_run = process.env.DRY; // Run with --env DRY=1
 let totalInserts = 0;
 
-const OVERWRITE_EXISTING = false;
+const OVERWRITE_EXISTING = process.env.OVERWRITE_EXISTING === "true";
 
 function insertEntry(entry){
     if (!entry.title.trim()){
@@ -41,7 +41,7 @@ function insertEntry(entry){
     }
 }
 
-function prepareEntryIfNotAlreadyExists(entry, insertEntry){
+function isEntryAlreadyExists(entry, insertEntry){
     axios.get(apiURI + "/api/entry/" + encodeURIComponent(entry.title))
     .then(x => prepareEntry(item, insertEntry))
     .catch();
